@@ -1,0 +1,6 @@
+{
+  "name": "TECHHAVEN — Premium Tech, Audio & Smart Wearables",
+  "description": "Production-grade e-commerce customer storefront for premium audio hardware, smartphones, creator laptops, smart wearables, and mobile accessories.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

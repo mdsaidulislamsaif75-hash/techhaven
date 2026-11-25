@@ -1,0 +1,195 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated customer profile stored privately per user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "phone": { "type": "string", "maxLength": 32 },
+        "preferredCurrency": { "type": "string", "enum": ["USD", "AED", "GBP", "CAD"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "email", "preferredCurrency", "createdAt", "updatedAt"]
+    },
+    "SavedAddress": {
+      "title": "SavedAddress",
+      "description": "Customer saved international shipping address.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "label": { "type": "string", "enum": ["Home", "Office", "Other"] },
+        "country": { "type": "string", "enum": ["US", "AE", "GB", "CA"] },
+        "fullName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "email": { "type": "string", "maxLength": 160 },
+        "phoneCode": { "type": "string", "enum": ["+1", "+971", "+44"] },
+        "phone": { "type": "string", "minLength": 5, "maxLength": 32 },
+        "streetAddress": { "type": "string", "minLength": 3, "maxLength": 200 },
+        "apartment": { "type": "string", "maxLength": 80 },
+        "city": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "region": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "postalCode": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "isDefault": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "userId", "label", "country", "fullName", "phoneCode", "phone",
+        "streetAddress", "city", "region", "postalCode", "isDefault", "createdAt", "updatedAt"
+      ]
+    },
+    "CartItem": {
+      "title": "CartItem",
+      "description": "Persisted shopping cart item for an authenticated customer.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "productId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "variantSku": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "colorName": { "type": "string", "maxLength": 60 },
+        "sizeName": { "type": "string", "maxLength": 60 },
+        "quantity": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "productId", "variantSku", "quantity", "createdAt", "updatedAt"]
+    },
+    "WishlistItem": {
+      "title": "WishlistItem",
+      "description": "Persisted wishlist product entry for an authenticated customer.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "productId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "productId", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "International customer order record with bounded line items and courier tracking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "orderNumber": { "type": "string", "minLength": 4, "maxLength": 32 },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "customerName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "customerPhone": { "type": "string", "minLength": 6, "maxLength": 40 },
+        "customerEmail": { "type": "string", "maxLength": 160 },
+        "country": { "type": "string", "enum": ["US", "AE", "GB", "CA"] },
+        "shippingTier": { "type": "string", "enum": ["standard", "express"] },
+        "courierName": { "type": "string", "maxLength": 60 },
+        "trackingNumber": { "type": "string", "maxLength": 48 },
+        "shippingAddress": { "type": "string", "minLength": 5, "maxLength": 400 },
+        "deliveryNote": { "type": "string", "maxLength": 240 },
+        "paymentMethod": { "type": "string", "enum": ["card", "paypal", "apple_pay", "google_pay", "payoneer", "cod"] },
+        "promoCode": { "type": "string", "maxLength": 32 },
+        "subtotalUsd": { "type": "number" },
+        "discountUsd": { "type": "number" },
+        "shippingUsd": { "type": "number" },
+        "totalUsd": { "type": "number" },
+        "status": {
+          "type": "string",
+          "enum": ["placed", "confirmed", "shipped", "out_for_delivery", "delivered", "cancelled", "return_requested"]
+        },
+        "items": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "orderNumber",
+        "userId",
+        "customerName",
+        "customerPhone",
+        "customerEmail",
+        "country",
+        "shippingTier",
+        "courierName",
+        "trackingNumber",
+        "shippingAddress",
+        "paymentMethod",
+        "subtotalUsd",
+        "discountUsd",
+        "shippingUsd",
+        "totalUsd",
+        "status",
+        "items",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ProductReview": {
+      "title": "ProductReview",
+      "description": "Customer-submitted product review without PII.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "productId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "rating": { "type": "integer" },
+        "title": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "comment": { "type": "string", "minLength": 5, "maxLength": 1000 },
+        "helpfulCount": { "type": "integer" },
+        "verifiedPurchase": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "productId", "userId", "authorName", "rating", "title", "comment", "helpfulCount", "verifiedPurchase", "createdAt", "updatedAt"]
+    },
+    "ProductQuestion": {
+      "title": "ProductQuestion",
+      "description": "Customer-submitted product question without PII.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "productId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "question": { "type": "string", "minLength": 5, "maxLength": 400 },
+        "answer": { "type": "string", "maxLength": 600 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "productId", "userId", "authorName", "question", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private customer profile (PII isolated to owner)."
+    },
+    "/users/{userId}/addresses/{addressId}": {
+      "schema": { "$ref": "#/entities/SavedAddress" },
+      "description": "Customer saved international shipping addresses."
+    },
+    "/users/{userId}/cartItems/{itemId}": {
+      "schema": { "$ref": "#/entities/CartItem" },
+      "description": "Customer persisted cart items."
+    },
+    "/users/{userId}/wishlist/{productId}": {
+      "schema": { "$ref": "#/entities/WishlistItem" },
+      "description": "Customer persisted wishlist entries."
+    },
+    "/users/{userId}/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer order records and live international courier tracking state."
+    },
+    "/productReviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/ProductReview" },
+      "description": "Publicly readable customer reviews (no PII)."
+    },
+    "/productQuestions/{questionId}": {
+      "schema": { "$ref": "#/entities/ProductQuestion" },
+      "description": "Publicly readable product Q&A entries (no PII)."
+    }
+  }
+}
