@@ -103,6 +103,34 @@ function writeStorage<T>(key: string, value: T): void {
   }
 }
 
+const VALID_ACCOUNT_TABS: AccountTab[] = ['manage', 'orders', 'wishlist', 'reviews', 'returns'];
+
+function parseHashRoute(): { page: AppPage; productId?: string; accountTab?: AccountTab } {
+  if (typeof window === 'undefined') return { page: 'home' };
+  const raw = window.location.hash.replace(/^#\/?/, '').trim();
+  if (!raw) return { page: 'home' };
+  const [segment, param] = raw.split('/');
+  if (segment === 'shop') return { page: 'shop' };
+  if (segment === 'checkout') return { page: 'checkout' };
+  if (segment === 'product' && param) {
+    const matched = PRODUCTS.find((p) => p.id === param);
+    if (matched) return { page: 'product', productId: matched.id };
+  }
+  if (segment === 'account') {
+    const tab = VALID_ACCOUNT_TABS.includes(param as AccountTab) ? (param as AccountTab) : 'manage';
+    return { page: 'account', accountTab: tab };
+  }
+  return { page: 'home' };
+}
+
+function buildHashRoute(page: AppPage, productId: string, accountTab: AccountTab): string {
+  if (page === 'shop') return '#/shop';
+  if (page === 'checkout') return '#/checkout';
+  if (page === 'product') return `#/product/${productId}`;
+  if (page === 'account') return `#/account/${accountTab}`;
+  return '#/';
+}
+
 interface StoreContextValue {
   theme: ThemeMode;
   toggleTheme: () => void;
@@ -214,9 +242,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const saved = readStorage<string>(STORAGE_KEYS.currency, 'USD');
     return saved === 'AED' || saved === 'GBP' || saved === 'CAD' ? saved : 'USD';
   });
-  const [page, setPage] = useState<AppPage>('home');
-  const [selectedProductId, setSelectedProductId] = useState<string>(PRODUCTS[0].id);
-  const [accountTab, setAccountTab] = useState<AccountTab>('manage');
+  const [initialRoute] = useState(() => parseHashRoute());
+  const [page, setPage] = useState<AppPage>(initialRoute.page);
+  const [selectedProductId, setSelectedProductId] = useState<string>(
+    initialRoute.productId || PRODUCTS[0].id
+  );
+  const [accountTab, setAccountTab] = useState<AccountTab>(initialRoute.accountTab || 'manage');
   const [shopFilters, setShopFilters] = useState<ShopFilters>(DEFAULT_FILTERS);
 
   const accountExtrasStorageKey = useMemo(
@@ -673,6 +704,30 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setPage('home');
     }
   }, [authReady, isAuthenticated, page]);
+
+  // Sync state -> URL hash & support browser back/forward navigation on GitHub Pages
+  useEffect(() => {
+    const targetHash = buildHashRoute(page, selectedProductId, accountTab);
+    if (page === 'home' && !window.location.hash) return;
+    if (window.location.hash !== targetHash) {
+      window.location.hash = targetHash;
+    }
+  }, [page, selectedProductId, accountTab]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const next = parseHashRoute();
+      if (next.page === 'checkout' && !isAuthenticated) {
+        setPage('home');
+        return;
+      }
+      if (next.productId) setSelectedProductId(next.productId);
+      if (next.accountTab) setAccountTab(next.accountTab);
+      setPage(next.page);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [isAuthenticated]);
 
   const navigate = useCallback(
     (
