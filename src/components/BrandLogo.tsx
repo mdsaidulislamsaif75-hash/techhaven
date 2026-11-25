@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export const TECHHAVEN_LOGO_SRC = '/assets/aistudio/TechHaven_Power_Logo_d926db08.png';
+export const TECHHAVEN_LOGO_SRC = `${import.meta.env.BASE_URL}assets/aistudio/TechHaven_Power_Logo_d926db08.png`;
 
 interface BrandLogoProps {
   variant?: 'header' | 'drawer' | 'footer';

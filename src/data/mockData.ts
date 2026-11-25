@@ -10,18 +10,21 @@ import {
   SavedAddress,
 } from '../types/store';
 
+const assetUrl = (relativePath: string) =>
+  `${import.meta.env.BASE_URL}${relativePath.replace(/^\/+/, '')}`;
+
 export const IMG = {
-  heroFlagship: '/src/assets/images/hero_flagship_tech_1795592353029.jpg',
-  heroLaptop: '/src/assets/images/hero_creator_laptop_1795592353833.jpg',
-  heroMobileGear: '/src/assets/images/hero_mobile_gear_1795592354314.jpg',
-  headphonesBlack: '/src/assets/images/prod_headphones_studio_1795592354198.jpg',
-  headphonesSilver: '/src/assets/images/prod_headphones_angle_1795592356245.jpg',
-  earbudsPro: '/src/assets/images/prod_earbuds_pro_1795592355553.jpg',
-  smartwatchUltra: '/src/assets/images/prod_smartwatch_ultra_1795592355689.jpg',
-  smartphonePro: '/src/assets/images/prod_smartphone_pro_1795592356596.jpg',
-  cameraMirrorless: '/src/assets/images/prod_camera_mirrorless_1795592357237.jpg',
-  speaker360: '/src/assets/images/prod_speaker_360_1795592357257.jpg',
-  droneGamepad: '/src/assets/images/prod_drone_gamepad_1795592406362.jpg',
+  heroFlagship: assetUrl('src/assets/images/hero_flagship_tech_1795592353029.jpg'),
+  heroLaptop: assetUrl('src/assets/images/hero_creator_laptop_1795592353833.jpg'),
+  heroMobileGear: assetUrl('src/assets/images/hero_mobile_gear_1795592354314.jpg'),
+  headphonesBlack: assetUrl('src/assets/images/prod_headphones_studio_1795592354198.jpg'),
+  headphonesSilver: assetUrl('src/assets/images/prod_headphones_angle_1795592356245.jpg'),
+  earbudsPro: assetUrl('src/assets/images/prod_earbuds_pro_1795592355553.jpg'),
+  smartwatchUltra: assetUrl('src/assets/images/prod_smartwatch_ultra_1795592355689.jpg'),
+  smartphonePro: assetUrl('src/assets/images/prod_smartphone_pro_1795592356596.jpg'),
+  cameraMirrorless: assetUrl('src/assets/images/prod_camera_mirrorless_1795592357237.jpg'),
+  speaker360: assetUrl('src/assets/images/prod_speaker_360_1795592357257.jpg'),
+  droneGamepad: assetUrl('src/assets/images/prod_drone_gamepad_1795592406362.jpg'),
 };
 
 export const CURRENCY_CONFIG: Record<
